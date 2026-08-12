@@ -58,6 +58,167 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            height: 100dvh;
+        }
+
+        #reader-exit-immersive {
+            align-items: center;
+            background: rgba(24, 24, 24, 0.82);
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            cursor: pointer;
+            display: none;
+            height: 44px;
+            justify-content: center;
+            padding: 0;
+            position: fixed;
+            right: max(12px, env(safe-area-inset-right));
+            top: max(12px, env(safe-area-inset-top));
+            width: 44px;
+            z-index: 10020;
+        }
+
+        body.reader-immersive #headerMenu,
+        body.reader-immersive #container-view-timeline,
+        body.reader-immersive #reader-info-top,
+        body.reader-immersive #reader-info-bottom,
+        body.reader-immersive #footerMenu,
+        body.reader-immersive #previous-chapter,
+        body.reader-immersive #next-chapter {
+            display: none !important;
+        }
+
+        body.reader-immersive #reader-exit-immersive {
+            display: flex;
+        }
+
+        body.reader-immersive #D2Reader-Container,
+        body.reader-immersive #iframe-wrapper {
+            height: 100dvh !important;
+            width: 100vw !important;
+        }
+
+        @media (max-width: 700px) {
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                overflow: hidden;
+                width: 100%;
+            }
+
+            #headerMenu {
+                flex: 0 0 calc(56px + env(safe-area-inset-top));
+                min-height: calc(56px + env(safe-area-inset-top));
+                position: relative;
+                z-index: 10010;
+            }
+
+            #headerMenu .mui-appbar {
+                height: calc(56px + env(safe-area-inset-top));
+                line-height: 56px;
+                min-height: calc(56px + env(safe-area-inset-top));
+                padding-top: env(safe-area-inset-top);
+            }
+
+            #headerMenu .mui-appbar table,
+            #headerMenu .mui-appbar tbody,
+            #headerMenu .mui-appbar tr {
+                display: flex;
+                height: 56px;
+                min-height: 56px;
+                width: 100%;
+            }
+
+            #headerMenu .mui-appbar tr {
+                align-items: center;
+            }
+
+            .reader-toolbar__primary {
+                align-items: center;
+                display: flex;
+                flex: 1 1 auto;
+                min-width: 0;
+                padding-left: 4px;
+            }
+
+            .reader-toolbar__primary .sidedrawer-toggle {
+                align-items: center;
+                display: flex !important;
+                font-size: 25px;
+                height: 44px;
+                justify-content: center;
+                padding: 0;
+                width: 44px;
+            }
+
+            .reader-brand {
+                display: block !important;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 1.2;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .reader-history {
+                display: none;
+            }
+
+            .reader-toolbar__actions {
+                align-items: center;
+                display: flex;
+                flex: 0 0 auto;
+                height: 56px;
+                padding-right: 2px !important;
+            }
+
+            .reader-toolbar__actions ul {
+                align-items: center;
+                display: flex;
+                height: 56px;
+                margin: 0;
+                padding: 0;
+                white-space: nowrap;
+            }
+
+            .reader-toolbar__actions li {
+                display: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .reader-toolbar__actions li.reader-mobile-action {
+                display: block !important;
+            }
+
+            .reader-toolbar__actions a {
+                align-items: center;
+                display: flex;
+                height: 44px;
+                justify-content: center;
+                padding: 0;
+                width: 44px;
+            }
+
+            #D2Reader-Container,
+            #iframe-wrapper {
+                margin: 0 !important;
+                min-width: 0;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+
+            #container-view-timeline,
+            #reader-info-top,
+            #reader-info-bottom,
+            #footerMenu,
+            #previous-chapter,
+            #next-chapter {
+                display: none !important;
+            }
         }
         /* Modern toggle switch */
         .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
@@ -681,18 +842,20 @@
             <div class="mui-appbar mui--appbar-line-height " style="background-color: white;color: black">
                     <table class="mui--appbar-height">
                         <tr>
-                            <td class="mui--text-title">
+                            <td class="mui--text-title reader-toolbar__primary">
                                 <a class="sidedrawer-toggle mui--visible-inline-block mui--visible-inline-block js-show-sidedrawer">☰</a>
-                                <span class="mui--text-title mui--visible-inline-block mui--visible-inline-block">DITA Toolkit</span>
-                                <a id="history-back" style="padding-left: 7px; padding-right: 7px;"><i class="material-icons ">arrow_back_ios</i></a>
-                                History
-                                <a id="history-forward" style="padding-left: 7px; padding-right: 7px;"><i class="material-icons ">arrow_forward_ios</i></a>
+                                <span class="mui--text-title mui--visible-inline-block mui--visible-inline-block reader-brand">Book Reader</span>
+                                <span class="reader-history">
+                                    <a id="history-back" style="padding-left: 7px; padding-right: 7px;"><i class="material-icons ">arrow_back_ios</i></a>
+                                    History
+                                    <a id="history-forward" style="padding-left: 7px; padding-right: 7px;"><i class="material-icons ">arrow_forward_ios</i></a>
+                                </span>
 
                             </td>
-                            <td align="mui--text-right" style="text-align: right;padding-right: 10px">
+                            <td class="reader-toolbar__actions" align="mui--text-right" style="text-align: right;padding-right: 10px">
                                 <ul class="mui-list--inline mui--text-body2">
                                     <li><a class="saveBookmark" id="menu-button-bookmark-range"  onclick="d2reader.saveBookmarkPlus()"><i class="material-icons">bookmark_border</i></a></li>
-                                    <li><a class="saveBookmark" id="menu-button-bookmark"><i class="material-icons">bookmark</i></a></li>
+                                    <li class="reader-mobile-action"><a class="saveBookmark" id="menu-button-bookmark" aria-label="Bookmark this page"><i class="material-icons">bookmark</i></a></li>
                                     <li><a id="menu-button-up" onclick="d2reader.lineUp()"><i class="material-icons">arrow_upward</i></a></li>
                                     <li><a id="menu-button-down" onclick="d2reader.lineDown()"><i class="material-icons">arrow_downward</i></a></li>
 
@@ -706,7 +869,9 @@
                                     <li><a class="mui--visible-inline-block  js-show-sidedrawer2" data-target="container-view-tts-settings" data-mui-toggle="dropdown" id="menu-button-tts"><i class="material-icons ">volume_up</i></a></li>
                                     <li><a class="mui--visible-inline-block  js-show-sidedrawer4"  data-target="container-view-layer-settings" id="menu-button-layer"><i class="material-icons ">toggle_on</i></a></li>
                                     <li><a class="mui--visible-inline-block  js-show-sidedrawer5"  data-target="container-view-mediaoverlay-settings" id="menu-button-mediaoverlay"><i class="material-icons ">record_voice_over</i></a></li>
-                                    <li><a class="mui--visible-inline-block  js-show-sidedrawer3"  data-target="container-view-settings-custom" id="menu-button-settings" onclick="reload()"><i class="material-icons">settings</i></a></li>
+                                    <li class="reader-mobile-action"><a class="mui--visible-inline-block  js-show-sidedrawer3"  data-target="container-view-settings-custom" id="menu-button-settings" aria-label="Reader settings" onclick="reload()"><i class="material-icons">settings</i></a></li>
+
+                                    <li class="reader-mobile-action"><a id="menu-button-fullscreen" aria-label="Enter immersive reading mode" aria-pressed="false"><i class="material-icons">fullscreen</i></a></li>
 
                                     <li style="display:none"><a class="mui--visible-inline-block  js-show-sidedrawer8"  data-target="container-view-search"  id="menu-button-search"><i class="material-icons">search</i></a></li>
 
@@ -722,6 +887,10 @@
                 <div class="mui-divider"></div>
             </div>
         </header>
+
+        <button id="reader-exit-immersive" type="button" aria-label="Exit immersive reading mode">
+            <i class="material-icons">fullscreen_exit</i>
+        </button>
 
         <div id="D2Reader-Container" style="flex: 1; min-height: 0;">
             <div id="lineFocusContainer" class="d2-line-focus-container" style="display: none;height: calc(100vh - 65px);">
@@ -1139,6 +1308,56 @@
         }
         const vocabularyBuilder = new VocabularyBuilder();
 
+        const compactReaderMedia = window.matchMedia('(max-width: 700px)');
+        const usesCompactReaderLayout = () =>
+            compactReaderMedia.matches || document.body.classList.contains('reader-immersive');
+
+        const fullscreenButton = document.getElementById('menu-button-fullscreen');
+        const exitImmersiveButton = document.getElementById('reader-exit-immersive');
+        let enteredNativeFullscreen = false;
+
+        function refreshReaderLayout() {
+            requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        }
+
+        function setImmersiveReader(active) {
+            document.body.classList.toggle('reader-immersive', active);
+            fullscreenButton.setAttribute('aria-pressed', String(active));
+            fullscreenButton.setAttribute(
+                'aria-label',
+                active ? 'Exit immersive reading mode' : 'Enter immersive reading mode'
+            );
+            fullscreenButton.querySelector('.material-icons').textContent =
+                active ? 'fullscreen_exit' : 'fullscreen';
+            refreshReaderLayout();
+        }
+
+        async function toggleImmersiveReader() {
+            const entering = !document.body.classList.contains('reader-immersive');
+            setImmersiveReader(entering);
+
+            if (entering && document.documentElement.requestFullscreen) {
+                try {
+                    await document.documentElement.requestFullscreen();
+                    enteredNativeFullscreen = true;
+                } catch (error) {
+                    console.info('Immersive reader is active within the browser viewport.', error);
+                }
+            } else if (!entering && document.fullscreenElement) {
+                await document.exitFullscreen();
+            }
+        }
+
+        fullscreenButton.addEventListener('click', toggleImmersiveReader);
+        exitImmersiveButton.addEventListener('click', toggleImmersiveReader);
+        document.addEventListener('fullscreenchange', () => {
+            if (enteredNativeFullscreen && !document.fullscreenElement) {
+                enteredNativeFullscreen = false;
+                setImmersiveReader(false);
+            }
+        });
+        compactReaderMedia.addEventListener?.('change', refreshReaderLayout);
+
         let d2reader;
         D2Reader.load({
             modules: [vocabularyBuilder],
@@ -1160,13 +1379,15 @@
                 // },
                 scrollContainer: "iframe",
                 safeArea: {
-                  top: () => document.querySelector('.mui-appbar'),
+                  top: () => usesCompactReaderLayout() ? null : document.querySelector('.mui-appbar'),
                   bottom: () => {
+                    if (usesCompactReaderLayout()) return null;
                     return document.body.classList.contains('script-vertical')
                       ? document.getElementById('container-view-timeline')
                       : document.getElementById('reader-info-bottom');
                   },
                   left: () => {
+                    if (usesCompactReaderLayout()) return null;
                     return document.body.classList.contains('script-vertical')
                       ? null
                       : document.getElementById('container-view-timeline')
