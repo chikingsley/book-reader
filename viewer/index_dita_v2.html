@@ -93,6 +93,11 @@
             display: flex;
         }
 
+        #menu-button-reading-mode[aria-pressed="true"] {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 999px;
+        }
+
         body.reader-immersive #D2Reader-Container,
         body.reader-immersive #iframe-wrapper {
             height: 100dvh !important;
@@ -856,6 +861,7 @@
                                 <ul class="mui-list--inline mui--text-body2">
                                     <li><a class="saveBookmark" id="menu-button-bookmark-range"  onclick="d2reader.saveBookmarkPlus()"><i class="material-icons">bookmark_border</i></a></li>
                                     <li class="reader-mobile-action"><a class="saveBookmark" id="menu-button-bookmark" aria-label="Bookmark this page"><i class="material-icons">bookmark</i></a></li>
+                                    <li class="reader-mobile-action"><a id="menu-button-reading-mode" aria-label="Switch to vertical scrolling" aria-pressed="false" aria-disabled="true"><i class="material-icons">auto_stories</i></a></li>
                                     <li><a id="menu-button-up" onclick="d2reader.lineUp()"><i class="material-icons">arrow_upward</i></a></li>
                                     <li><a id="menu-button-down" onclick="d2reader.lineDown()"><i class="material-icons">arrow_downward</i></a></li>
 
@@ -1314,6 +1320,7 @@
 
         const fullscreenButton = document.getElementById('menu-button-fullscreen');
         const exitImmersiveButton = document.getElementById('reader-exit-immersive');
+        const readingModeButton = document.getElementById('menu-button-reading-mode');
         let enteredNativeFullscreen = false;
 
         function refreshReaderLayout() {
@@ -1357,6 +1364,32 @@
             }
         });
         compactReaderMedia.addEventListener?.('change', refreshReaderLayout);
+
+        function syncReadingModeControl(settings) {
+            const scrolling = Boolean(settings?.verticalScroll);
+            readingModeButton.setAttribute('aria-pressed', String(scrolling));
+            readingModeButton.setAttribute('aria-disabled', String(!d2reader));
+            readingModeButton.setAttribute(
+                'aria-label',
+                scrolling ? 'Switch to paginated reading' : 'Switch to vertical scrolling'
+            );
+            readingModeButton.setAttribute(
+                'title',
+                scrolling ? 'Scrolling view' : 'Paginated view'
+            );
+            readingModeButton.querySelector('.material-icons').textContent =
+                scrolling ? 'swap_vert' : 'auto_stories';
+        }
+
+        async function toggleReadingMode() {
+            if (!d2reader) return;
+            const scrolling = !Boolean(d2reader.currentSettings.verticalScroll);
+            await d2reader.applyUserSettings({ verticalScroll: scrolling });
+            syncReadingModeControl(d2reader.currentSettings);
+            setScroll(String(scrolling));
+        }
+
+        readingModeButton.addEventListener('click', toggleReadingMode);
 
         let d2reader;
         D2Reader.load({
@@ -1795,6 +1828,7 @@
                 },
                 updateSettings: function(settings) {
                     console.log("updateSettings");
+                    syncReadingModeControl(settings);
                     return new Promise(function(resolve, reject) {
                         resolve(
                           settings,
@@ -1828,6 +1862,7 @@
         }).then(instance => {
             console.log("D2reader instance ready", instance);
             d2reader = instance;
+            syncReadingModeControl(instance.currentSettings);
             // Populate settings panel inputs with current values so the UI
             // reflects integrator-supplied / persisted settings on first load.
             try { reload(); } catch (e) { console.warn('reload() failed', e); }

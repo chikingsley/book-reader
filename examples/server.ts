@@ -25,6 +25,14 @@ async function start() {
     maxPrefetchLinks: 5,
   });
 
+  // Publications in this preview server are actively rebuilt in place. The
+  // upstream streamer otherwise gives EPUB assets a one-day public cache.
+  // Route every streamer cache decision through its uncached response path so
+  // regenerated XHTML, CSS, fonts, and artwork appear on the next request.
+  const setResponseCacheHeaders = server.setResponseCacheHeaders.bind(server);
+  server.setResponseCacheHeaders = (res: express.Response) =>
+    setResponseCacheHeaders(res, false);
+
   // ── Serve viewer files ──────────────────────────────────────────────
 
   server.expressUse(
