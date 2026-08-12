@@ -102,6 +102,11 @@ export default class ColumnRenderer extends ReflowableRenderer {
 
     let doc = this.iframe.contentDocument;
     if (doc) {
+      const body = doc.body;
+      if (body) {
+        body.style.removeProperty("height");
+        body.style.removeProperty("overflow-y");
+      }
       const html = HTMLUtilities.findIframeElement(
         doc,
         "html"
@@ -126,6 +131,16 @@ export default class ColumnRenderer extends ReflowableRenderer {
   start(): void {
     this.iframe.height = "0";
     this.iframe.width = "0";
+
+    const doc = this.iframe.contentDocument;
+    if (doc) {
+      doc.body.style.removeProperty("height");
+      doc.body.style.removeProperty("overflow-y");
+      doc.documentElement.style.setProperty(
+        "--USER__scroll",
+        "readium-scroll-off"
+      );
+    }
 
     this.setSize();
     const viewportElement = document.createElement("meta");

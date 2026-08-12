@@ -97,7 +97,24 @@ export default class ScrollRenderer extends ReflowableRenderer {
         // Clear the paginated-mode height constraint left over from any
         // prior ColumnRenderer engage — scroll mode needs the document to
         // grow with its content, not be clamped to a single viewport.
-        html.style.removeProperty("height");
+        if (this.scrollContainerMode === "iframe") {
+          html.style.setProperty("height", "100%", "important");
+        } else {
+          html.style.removeProperty("height");
+        }
+      }
+      const body = doc.body;
+      if (body) {
+        if (this.scrollContainerMode === "iframe") {
+          // ReadiumCSS clips the XHTML body in paginated mode. The iframe is
+          // the scrolling surface here, so restore a viewport-height body
+          // with real vertical overflow when switching modes at runtime.
+          body.style.setProperty("height", "100%", "important");
+          body.style.setProperty("overflow-y", "auto", "important");
+        } else {
+          body.style.removeProperty("height");
+          body.style.removeProperty("overflow-y");
+        }
       }
       doc
         .querySelectorAll('[id^="r2d2bc-column-spacer"]')
@@ -139,6 +156,18 @@ export default class ScrollRenderer extends ReflowableRenderer {
         if (viewport) {
           viewport.remove();
         }
+      }
+      const html = doc.documentElement;
+      const body = doc.body;
+      html.style.setProperty("--USER__scroll", "readium-scroll-on");
+      if (this.scrollContainerMode === "iframe") {
+        html.style.setProperty("height", "100%", "important");
+        body.style.setProperty("height", "100%", "important");
+        body.style.setProperty("overflow-y", "auto", "important");
+      } else {
+        html.style.removeProperty("height");
+        body.style.removeProperty("height");
+        body.style.removeProperty("overflow-y");
       }
     }
     this.setSize();

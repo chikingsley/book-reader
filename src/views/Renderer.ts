@@ -53,6 +53,9 @@ interface Renderer {
   /** Load this renderer in its book element, at the specified position. */
   start(): void;
 
+  /** Apply mode-specific styles after the iframe document is available. */
+  engage?(): void;
+
   /** Remove this renderer from its book element. */
   stop(): void;
 

@@ -1596,6 +1596,14 @@ export class EpubNavigator extends VisualNavigator implements EpubModuleHost {
       this.updateRenderer({ skipDrawingAnnotations: true });
 
       await this.settings.applyProperties();
+      // The iframe document exists only after this load event. Re-sync the
+      // active renderer selected by persisted settings, then apply its
+      // document-level mode styles against the loaded XHTML. Initial engage
+      // calls can occur while contentDocument is still empty.
+      if (this.settings.view && this.view !== this.settings.view) {
+        this.view = this.settings.view;
+      }
+      this.view?.engage?.();
 
       let currentLocation = this.currentChapterLink.href;
       if (currentLocation) {

@@ -37,6 +37,18 @@ async function start() {
 
   server.expressUse(
     "/viewer",
+    (
+      _req: express.Request,
+      res: express.Response,
+      next: express.NextFunction
+    ) => {
+      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+      next();
+    }
+  );
+
+  server.expressUse(
+    "/viewer",
     //@ts-ignore
     express.static(path.join(__dirname, "../viewer"), { fallthrough: true })
   );
