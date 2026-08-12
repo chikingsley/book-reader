@@ -61,6 +61,38 @@
             height: 100dvh;
         }
 
+        body {
+            background: #f7f7f7;
+            color: #202124;
+        }
+
+        body.reader-theme-night {
+            background: #12110d;
+            color: #f2efe7;
+            color-scheme: dark;
+        }
+
+        body.reader-theme-night #headerMenu .mui-appbar,
+        body.reader-theme-night #sidedrawer,
+        body.reader-theme-night #sidedrawer2,
+        body.reader-theme-night .dropdown-content,
+        body.reader-theme-night .settings,
+        body.reader-theme-night .settings-view {
+            background: #1b1914 !important;
+            color: #f2efe7 !important;
+        }
+
+        body.reader-theme-night #headerMenu .mui-appbar a,
+        body.reader-theme-night #sidedrawer a,
+        body.reader-theme-night #sidedrawer strong,
+        body.reader-theme-night .setting-row label {
+            color: #f2efe7 !important;
+        }
+
+        body.reader-theme-night .mui-divider {
+            background-color: #3a3730;
+        }
+
         #reader-exit-immersive {
             align-items: center;
             background: rgba(24, 24, 24, 0.82);
@@ -448,7 +480,7 @@
 
                     <!-- Appearance -->
                     <div id="appearance" class="setting-row" style="justify-content: center; gap: 0;">
-                        <button class="seg-btn seg-left" onclick="d2reader.applyUserSettings({appearance:'day'});setAppearance('day')" style="background:#fff;color:#000;">Day</button><button class="seg-btn seg-mid" onclick="d2reader.applyUserSettings({appearance:'sepia'});setAppearance('sepia')" style="background:#f5e6c8;color:#000;">Sepia</button><button class="seg-btn seg-right" onclick="d2reader.applyUserSettings({appearance:'night'});setAppearance('night')" style="background:#121212;color:#fff;">Night</button>
+                        <button class="seg-btn seg-left" onclick="applyAppearancePreference('system')">System</button><button class="seg-btn seg-mid" onclick="applyAppearancePreference('day')" style="background:#fff;color:#000;">Day</button><button class="seg-btn seg-mid" onclick="applyAppearancePreference('sepia')" style="background:#f5e6c8;color:#000;">Sepia</button><button class="seg-btn seg-right" onclick="applyAppearancePreference('night')" style="background:#121212;color:#fff;">Night</button>
                     </div>
 
                     <!-- Layout -->
@@ -1833,6 +1865,7 @@
                 await instance.applyUserSettings({ verticalScroll: false, pageMargins: 1 });
                 localStorage.setItem(readingModeMigration, "done");
             }
+            await applyAppearancePreference(getAppearancePreference(), false);
             // Populate settings panel inputs with current values so the UI
             // reflects integrator-supplied / persisted settings on first load.
             try { reload(); } catch (e) { console.warn('reload() failed', e); }
@@ -2057,10 +2090,38 @@
         function setScroll(v) { setSegActive('scrollMode', v === 'false' ? 1 : 0); }
         function setAlignment(v) { setSegActive('textAlignment', v === 'start' ? 2 : v === 'justify' ? 1 : 0); }
 
-        // Appearance has fixed bg colors, so highlight with border/outline instead
+        const appearancePreferenceKey = 'book-reader:appearance-preference';
+        const systemColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function getAppearancePreference() {
+            return localStorage.getItem(appearancePreferenceKey) || 'system';
+        }
+
+        function resolvedSystemAppearance() {
+            return systemColorScheme.matches ? 'night' : 'day';
+        }
+
+        function syncReaderChromeTheme(appearance) {
+            document.body.classList.remove('reader-theme-day', 'reader-theme-sepia', 'reader-theme-night');
+            document.body.classList.add('reader-theme-' + appearance);
+        }
+
+        async function applyAppearancePreference(preference, persist = true) {
+            if (persist) localStorage.setItem(appearancePreferenceKey, preference);
+            const appearance = preference === 'system' ? resolvedSystemAppearance() : preference;
+            syncReaderChromeTheme(appearance);
+            setAppearance(preference);
+            if (d2reader) await d2reader.applyUserSettings({ appearance });
+        }
+
+        systemColorScheme.addEventListener?.('change', () => {
+            if (getAppearancePreference() === 'system') applyAppearancePreference('system', false);
+        });
+
+        // Appearance buttons retain their own colors, so the active choice uses an outline.
         function setAppearance(v) {
             let buttons = document.getElementById('appearance').getElementsByTagName('button');
-            let idx = v === 'night' ? 2 : v === 'sepia' ? 1 : 0;
+            let idx = v === 'night' ? 3 : v === 'sepia' ? 2 : v === 'day' ? 1 : 0;
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].style.outline = i === idx ? '2px solid #4a90d9' : 'none';
                 buttons[i].style.outlineOffset = '-2px';
@@ -2092,7 +2153,7 @@
             document.getElementById("fontFamily").value = r.fontFamily;
 
             // Segmented controls
-            setAppearance(r.appearance);
+            setAppearance(getAppearancePreference());
             setColumns(r.columnCount);
             setDirection(r.direction);
             setScroll(String(r.verticalScroll).toLowerCase());
