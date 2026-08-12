@@ -5,7 +5,6 @@ import * as fs from "fs";
 import { execSync } from "child_process";
 
 import recursive from "recursive-readdir";
-import { manifestFromArchive } from "./audiobookFromArchive";
 
 interface PublicationEntry {
   title: string;
@@ -16,152 +15,7 @@ interface PublicationEntry {
 }
 
 async function start() {
-  const publications: PublicationEntry[] = [
-    // Built-in demo publications (hosted remotely)
-    {
-      title: "Alice's Adventures in Wonderland",
-      filename: "alice (hosted)",
-      type: "pdf",
-      hosted: true,
-      viewers: [
-        {
-          title: "PDF Viewer",
-          url: `/viewer/index_pdf.html?url=https://alicepdf.dita.digital/alice.json`,
-        },
-      ],
-    },
-    {
-      title: "Alice's Adventures in Wonderland",
-      filename: "alice (hosted)",
-      type: "epub",
-      hosted: true,
-      viewers: [
-        {
-          title: "DITA Toolkit (ReadiumCSS v1)",
-          url: `/viewer/index_dita.html?url=https://alice.dita.digital/manifest.json`,
-        },
-        {
-          title: "DITA Toolkit (ReadiumCSS v2)",
-          url: `/viewer/index_dita_v2.html?url=https://alice.dita.digital/manifest.json`,
-        },
-        {
-          title: "Small Window (600×500)",
-          url: `/viewer/index_small_window.html?url=https://alice.dita.digital/manifest.json`,
-        },
-      ],
-    },
-    // The Readium spec hosts a Flatland manifest at
-    // `https://readium.org/webpub-manifest/examples/Flatland/`, but its
-    // readingOrder uses legacy `http://www.archive.org/...` URLs that
-    // omit CORS headers on the redirect chain — incompatible with our
-    // Web Audio pipeline (`MediaElementAudioSourceNode` requires
-    // `crossOrigin="anonymous"` on a fully CORS-clean source).
-    //
-    // We use the same LibriVox source via our `/archive/` converter,
-    // which goes through `https://archive.org/download/...` (CORS-clean
-    // through every redirect).
-    {
-      title: "Flatland",
-      filename: "flatland (LibriVox)",
-      type: "audiobook",
-      hosted: true,
-      viewers: [
-        {
-          title: "Audiobook Reader",
-          url: `/viewer/index_audiobook.html?url=/archive/flatland_rg_librivox/manifest.json`,
-        },
-        {
-          title: "Minimal Player",
-          url: `/viewer/index_audiobook_minimal.html?url=/archive/flatland_rg_librivox/manifest.json`,
-        },
-      ],
-    },
-    // LibriVox audiobooks via the Internet Archive metadata API.
-    // The `/archive/:id/manifest.json` route below converts each IA
-    // item into a Readium Audiobook Profile manifest on demand.
-    // Identifiers were verified to have VBR / 128Kbps MP3 derivatives
-    // with valid per-track durations.
-    {
-      title: "Pride and Prejudice",
-      filename: "pride_prejudice (LibriVox)",
-      type: "audiobook",
-      hosted: true,
-      viewers: [
-        {
-          title: "Audiobook Reader",
-          url: `/viewer/index_audiobook.html?url=/archive/pride_prejudice_krs_librivox/manifest.json`,
-        },
-        {
-          title: "Minimal Player",
-          url: `/viewer/index_audiobook_minimal.html?url=/archive/pride_prejudice_krs_librivox/manifest.json`,
-        },
-      ],
-    },
-    {
-      title: "Treasure Island",
-      filename: "treasureisland (LibriVox)",
-      type: "audiobook",
-      hosted: true,
-      viewers: [
-        {
-          title: "Audiobook Reader",
-          url: `/viewer/index_audiobook.html?url=/archive/treasureisland_librivox/manifest.json`,
-        },
-        {
-          title: "Minimal Player",
-          url: `/viewer/index_audiobook_minimal.html?url=/archive/treasureisland_librivox/manifest.json`,
-        },
-      ],
-    },
-    {
-      title: "The Call of the Wild",
-      filename: "callofthewild (LibriVox)",
-      type: "audiobook",
-      hosted: true,
-      viewers: [
-        {
-          title: "Audiobook Reader",
-          url: `/viewer/index_audiobook.html?url=/archive/callofthewild_tc_1010_librivox/manifest.json`,
-        },
-        {
-          title: "Minimal Player",
-          url: `/viewer/index_audiobook_minimal.html?url=/archive/callofthewild_tc_1010_librivox/manifest.json`,
-        },
-      ],
-    },
-    {
-      title: "The Time Machine",
-      filename: "timemachine (LibriVox)",
-      type: "audiobook",
-      hosted: true,
-      viewers: [
-        {
-          title: "Audiobook Reader",
-          url: `/viewer/index_audiobook.html?url=/archive/time_machine_v6_2008_librivox/manifest.json`,
-        },
-        {
-          title: "Minimal Player",
-          url: `/viewer/index_audiobook_minimal.html?url=/archive/time_machine_v6_2008_librivox/manifest.json`,
-        },
-      ],
-    },
-    {
-      title: "The Art of War",
-      filename: "artofwar (LibriVox)",
-      type: "audiobook",
-      hosted: true,
-      viewers: [
-        {
-          title: "Audiobook Reader",
-          url: `/viewer/index_audiobook.html?url=/archive/artofwar_2008_librivox/manifest.json`,
-        },
-        {
-          title: "Minimal Player",
-          url: `/viewer/index_audiobook_minimal.html?url=/archive/artofwar_2008_librivox/manifest.json`,
-        },
-      ],
-    },
-  ];
+  const publications: PublicationEntry[] = [];
 
   const server = new Server({
     disableDecryption: true,
@@ -240,64 +94,30 @@ async function start() {
     res.json(manifest);
   });
 
-  // ── Internet Archive → Readium Audiobook manifest ──────────────────
-  //
-  // GET /archive/{ID}/manifest.json
-  // Fetches IA item metadata, picks the highest-quality MP3 derivatives
-  // per track, and returns a Readium Audiobook Profile manifest. IA
-  // serves audio with permissive CORS so the manifest plays directly
-  // without proxying.
-  server.expressUse("/archive", async (req: any, res: any, next: any) => {
-    // /archive/<id>/manifest.json — pull the id segment.
-    const m = req.path.match(/^\/([^/]+)\/manifest\.json\/?$/);
-    if (!m) {
-      next();
-      return;
-    }
-    const id = decodeURIComponent(m[1]);
-    const selfUrl = `${req.protocol}://${req.get("host")}/archive/${encodeURIComponent(id)}/manifest.json`;
-    try {
-      const manifest = await manifestFromArchive(id, selfUrl);
-      res.setHeader("Content-Type", "application/audiobook+json");
-      res.setHeader("Cache-Control", "public, max-age=3600");
-      res.json(manifest);
-    } catch (err: any) {
-      console.error(`[archive] ${id}:`, err?.message ?? err);
-      res.status(502).json({
-        error: "Failed to build manifest",
-        id,
-        message: String(err?.message ?? err),
-      });
-    }
-  });
-
-  // ── EPUB fetch (pass-through for CORS-restricted URLs) ─────────────
-
-  server.expressUse("/api/fetch-epub", async (req: any, res: any) => {
-    const url = req.query.url;
-    if (!url) {
-      res.status(400).send("Missing ?url= parameter");
-      return;
-    }
-    try {
-      const response = await fetch(url, { redirect: "follow" });
-      if (!response.ok) {
-        res.status(response.status).send(response.statusText);
-        return;
-      }
-      res.set("Content-Type", "application/epub+zip");
-      res.set("Access-Control-Allow-Origin", "*");
-      const buffer = await response.arrayBuffer();
-      res.send(Buffer.from(buffer));
-    } catch (error: any) {
-      res.status(500).send(error.message || "Fetch failed");
-    }
-  });
-
   // ── Publications API ────────────────────────────────────────────────
 
   server.expressUse("/api/publications", (req: any, res: any) => {
     res.json(publications);
+  });
+
+  server.expressUse("/books", (req: any, res: any) => {
+    const slug = decodeURIComponent(req.path.replace(/^\//, ""));
+    const publication = publications.find(
+      (entry) =>
+        entry.type === "epub" &&
+        entry.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "") === slug
+    );
+    const viewer = publication?.viewers.find(
+      (entry) => entry.title === "DITA Toolkit (ReadiumCSS v2)"
+    );
+    if (!viewer) {
+      res.status(404).send("Book unavailable");
+      return;
+    }
+    res.redirect(302, viewer.url);
   });
 
   // ── Scan local files ────────────────────────────────────────────────

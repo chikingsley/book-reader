@@ -1142,7 +1142,7 @@
         let d2reader;
         D2Reader.load({
             modules: [vocabularyBuilder],
-            url: new URL(urlParams["url"]),
+            url: new URL(urlParams["url"], window.location.origin),
             // requestConfig: {
             //     method: "GET",
             //     mode: "cors",
