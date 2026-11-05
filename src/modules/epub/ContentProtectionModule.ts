@@ -63,8 +63,7 @@ export interface ContentProtectionModuleProperties {
    * omitted sides fall back to the historical default.
    */
   viewportSlack?:
-    | number
-    | { top?: number; bottom?: number; left?: number; right?: number };
+    number | { top?: number; bottom?: number; left?: number; right?: number };
 }
 
 export interface ContentProtectionModuleConfig extends Partial<ContentProtectionModuleProperties> {
@@ -1120,8 +1119,7 @@ export class ContentProtectionModule implements ReaderModule<EpubModuleHost> {
         selectionInfo =
           (
             this.host.getModule(NavigatorFeature.Annotations) as
-              | import("./AnnotationModule").AnnotationModule
-              | undefined
+              import("./AnnotationModule").AnnotationModule | undefined
           )?.annotator?.getTemporarySelectionInfo(doc) ?? undefined;
       }
 
@@ -1171,8 +1169,7 @@ export class ContentProtectionModule implements ReaderModule<EpubModuleHost> {
           selectionInfo =
             (
               this.host.getModule(NavigatorFeature.Annotations) as
-                | import("./AnnotationModule").AnnotationModule
-                | undefined
+                import("./AnnotationModule").AnnotationModule | undefined
             )?.annotator?.getTemporarySelectionInfo(doc) ?? undefined;
         }
         this.copyToClipboard(
@@ -1233,7 +1230,7 @@ export class ContentProtectionModule implements ReaderModule<EpubModuleHost> {
 
     try {
       document.execCommand("copy", false);
-    } catch (e) {
+    } catch {
       // fallback failed silently
     }
     document.body.removeChild(el);

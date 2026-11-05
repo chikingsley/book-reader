@@ -230,12 +230,10 @@ function id(input: Element): CSSNode | null {
 function classNames(input: Element): CSSNode[] {
   const names = Array.from(input.classList).filter(config.className);
 
-  return names.map(
-    (name): CSSNode => ({
-      name: "." + cssesc(name, { isIdentifier: true }),
-      penalty: 1,
-    })
-  );
+  return names.map((name): CSSNode => ({
+    name: "." + cssesc(name, { isIdentifier: true }),
+    penalty: 1,
+  }));
 }
 
 function tagName(input: Element): CSSNode | null {

@@ -280,7 +280,7 @@ export class MediaOverlayModule implements ReaderModule<EpubModuleHost> {
               link.mediaOverlayNode = MediaOverlayNode.deserialize(moJson)!;
               link.mediaOverlayNode.initialized = true;
             }
-          } catch (e) {
+          } catch {
             log.log(
               "handleContentClick() - failed to load MO for clicked page"
             );
@@ -485,7 +485,7 @@ export class MediaOverlayModule implements ReaderModule<EpubModuleHost> {
         this.mediaOverlayHighlight(match_id);
 
         this.myReq = requestAnimationFrame(this.trackCurrentTime.bind(this));
-      } catch (e) {}
+      } catch {}
     }
   }
 

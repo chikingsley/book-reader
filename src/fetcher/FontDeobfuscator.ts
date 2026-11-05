@@ -168,8 +168,7 @@ export function createDeobfuscationTransform(
 ) => Promise<import("./Fetcher").Resource> {
   return async (resource) => {
     const encrypted = resource.properties?.encrypted as
-      | EncryptionInfo
-      | undefined;
+      EncryptionInfo | undefined;
     if (!encrypted || !resource.bytes) return resource;
 
     let deobfuscated: Uint8Array;

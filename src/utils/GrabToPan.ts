@@ -118,7 +118,7 @@ class GrabToPan {
       try {
         // eslint-disable-next-line no-unused-expressions,@typescript-eslint/no-unused-expressions
         event.originalTarget.tagName;
-      } catch (e) {
+      } catch {
         // Mozilla-specific: element is a scrollbar (XUL element)
         return;
       }

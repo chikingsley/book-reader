@@ -381,7 +381,7 @@ export class PDFNavigator extends VisualNavigator implements PDFModuleHost {
     if (this.pdfDoc) {
       releasePdfViewerDocument(this.pdfViewer);
       releasePdfLinkServiceDocument(this.linkService);
-      await this.pdfDoc.destroy();
+      await this.pdfDoc.loadingTask.destroy();
       this.pdfDoc = null;
     }
 
@@ -395,10 +395,10 @@ export class PDFNavigator extends VisualNavigator implements PDFModuleHost {
         if (bytes) {
           task = getDocument({ data: bytes });
         } else {
-          task = getDocument(url);
+          task = getDocument({ url });
         }
       } else {
-        task = getDocument(url);
+        task = getDocument({ url });
       }
       const doc = await task.promise;
       this.pdfDoc = doc;
@@ -723,7 +723,7 @@ export class PDFNavigator extends VisualNavigator implements PDFModuleHost {
     this.registry.stopAll();
     removeEventListenerOptional(window, "resize", this.onResize);
     if (this.pdfViewer) releasePdfViewerDocument(this.pdfViewer);
-    this.pdfDoc?.destroy();
+    void this.pdfDoc?.loadingTask.destroy();
     this.pdfDoc = null;
   }
 }

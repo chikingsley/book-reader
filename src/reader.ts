@@ -193,8 +193,7 @@ export default class D2Reader {
     // or a TransformingFetcher wrapping it (for font deobfuscation).
     let epubZipFetcher: import("./fetcher/Fetcher").Fetcher | undefined;
     let epubBlobUrlManager:
-      | import("./fetcher/BlobUrlManager").BlobUrlManager
-      | undefined;
+      import("./fetcher/BlobUrlManager").BlobUrlManager | undefined;
 
     if (initialConfig.epub) {
       // ── Client-side EPUB opening ────────────────────────────────────
@@ -587,11 +586,9 @@ export default class D2Reader {
         // EPUB owns the typography-shaped userSettings — the union at
         // the config level resolves to `Partial<InitialUserSettings>`
         // for an EPUB publication, so this cast is sound at runtime.
-        initialUserSettings: initialConfig.userSettings as
-          | Partial<
-              import("./model/user-settings/UserSettings").InitialUserSettings
-            >
-          | null,
+        initialUserSettings: initialConfig.userSettings as Partial<
+          import("./model/user-settings/UserSettings").InitialUserSettings
+        > | null,
         headerMenu: headerMenu,
         api: initialConfig.api,
         injectables: publication.isFixedLayout
@@ -1148,8 +1145,7 @@ export default class D2Reader {
    * for EPUB/PDF preferences. Subscribe to `onChange` to keep UI in sync.
    */
   get audiobookSettings():
-    | import("./model/user-settings/AudiobookSettings").AudiobookSettings
-    | null {
+    import("./model/user-settings/AudiobookSettings").AudiobookSettings | null {
     return this.asAudio()?.settings ?? null;
   }
 
@@ -1203,8 +1199,7 @@ export default class D2Reader {
    * for live countdown updates.
    */
   sleepTimerState():
-    | import("./navigator/audio/SleepTimer").SleepTimerSnapshot
-    | null {
+    import("./navigator/audio/SleepTimer").SleepTimerSnapshot | null {
     return this.asAudio()?.sleepTimerState() ?? null;
   }
 
@@ -1334,9 +1329,7 @@ export default class D2Reader {
 
   private isTTSIncrementable(
     incremental:
-      | UserSettingsIncrementable
-      | TTSIncrementable
-      | MediaOverlayIncrementable
+      UserSettingsIncrementable | TTSIncrementable | MediaOverlayIncrementable
   ): incremental is TTSIncrementable {
     return (
       incremental === "pitch" ||
@@ -1346,9 +1339,7 @@ export default class D2Reader {
   }
   private isMOIncrementable(
     incremental:
-      | UserSettingsIncrementable
-      | TTSIncrementable
-      | MediaOverlayIncrementable
+      UserSettingsIncrementable | TTSIncrementable | MediaOverlayIncrementable
   ): incremental is MediaOverlayIncrementable {
     return incremental === "mo_rate" || incremental === "mo_volume";
   }
@@ -1359,9 +1350,7 @@ export default class D2Reader {
    */
   increase = async (
     incremental:
-      | UserSettingsIncrementable
-      | TTSIncrementable
-      | MediaOverlayIncrementable
+      UserSettingsIncrementable | TTSIncrementable | MediaOverlayIncrementable
   ) => {
     if (this.isTTSIncrementable(incremental)) {
       if (this.navigator.supports(NavigatorFeature.TTS)) {
@@ -1382,9 +1371,7 @@ export default class D2Reader {
    */
   decrease = async (
     incremental:
-      | UserSettingsIncrementable
-      | TTSIncrementable
-      | MediaOverlayIncrementable
+      UserSettingsIncrementable | TTSIncrementable | MediaOverlayIncrementable
   ) => {
     if (this.isTTSIncrementable(incremental)) {
       if (this.navigator.supports(NavigatorFeature.TTS)) {

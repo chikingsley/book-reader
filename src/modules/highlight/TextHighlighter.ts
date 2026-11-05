@@ -1216,7 +1216,7 @@ export class TextHighlighter {
             focusRange.collapse(true);
             const rects = focusRange.getClientRects();
             if (rects.length > 0) focusRect = rects[0];
-          } catch (e) {
+          } catch {
             focusRect = null;
           }
         }

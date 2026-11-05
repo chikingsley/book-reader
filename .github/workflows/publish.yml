@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Detect dist-tag from version
         id: distTag
@@ -55,7 +55,7 @@ jobs:
           fi
 
       - name: Setup Node (npmjs.com)
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -70,7 +70,7 @@ jobs:
         run: npm publish --tag ${{ steps.distTag.outputs.tag }} --access public
 
       - name: Setup Node (GitHub Packages)
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://npm.pkg.github.com

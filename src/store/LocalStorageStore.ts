@@ -57,7 +57,7 @@ export default class LocalStorageStore implements Store {
         window.sessionStorage.removeItem(testKey);
         this.fallbackStore = null;
       }
-    } catch (e) {
+    } catch {
       this.fallbackStore = new MemoryStore();
     }
   }

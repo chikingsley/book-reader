@@ -447,14 +447,12 @@ export class AudiobookNavigator
    */
   private getTimelineModule(): AudiobookTimelineModule | undefined {
     return this.getModule(NavigatorFeature.Timeline) as
-      | AudiobookTimelineModule
-      | undefined;
+      AudiobookTimelineModule | undefined;
   }
 
   private getCommentsModule(): AudiobookCommentsModule | undefined {
     return this.getModule(NavigatorFeature.Comments) as
-      | AudiobookCommentsModule
-      | undefined;
+      AudiobookCommentsModule | undefined;
   }
 
   /**
@@ -526,8 +524,7 @@ export class AudiobookNavigator
     }
     parent.appendChild(row);
     const children = link.children?.items as
-      | ReadonlyArray<import("../model/v3/Link").Link>
-      | undefined;
+      ReadonlyArray<import("../model/v3/Link").Link> | undefined;
     if (children && children.length > 0) {
       const sub = document.createElement("ol");
       sub.className = "dita-audiobook-chapters-sub";
@@ -641,9 +638,7 @@ export class AudiobookNavigator
       navigator.annotator?.clearLastReadingPosition();
     } else {
       const stored = navigator.annotator?.getLastReadingPosition() as
-        | Locator
-        | null
-        | undefined;
+        Locator | null | undefined;
       if (stored?.href) restoreLocator = stored;
     }
 

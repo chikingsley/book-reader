@@ -143,7 +143,7 @@ export class TTSModule2 implements ReaderModule<EpubModuleHost> {
         while (range.toString().indexOf(" ") !== 0) {
           try {
             range.setStart(node, range.startOffset - 1);
-          } catch (e) {
+          } catch {
             break;
           }
         }

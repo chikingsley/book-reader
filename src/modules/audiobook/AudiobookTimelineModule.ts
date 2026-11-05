@@ -450,15 +450,13 @@ export class AudiobookTimelineModule implements ReaderModule<AudiobookModuleHost
 
   private bookmarks(): ReadonlyArray<Bookmark> {
     const bookmarkModule = this.host?.getModule(NavigatorFeature.Bookmarks) as
-      | IBookmarkModule
-      | undefined;
+      IBookmarkModule | undefined;
     return bookmarkModule?.list() ?? [];
   }
 
   private comments(): ReadonlyArray<Comment> {
     const commentsModule = this.host?.getModule(NavigatorFeature.Comments) as
-      | ICommentsModule
-      | undefined;
+      ICommentsModule | undefined;
     return commentsModule?.list() ?? [];
   }
 

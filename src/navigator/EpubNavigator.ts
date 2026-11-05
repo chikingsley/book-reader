@@ -1102,8 +1102,7 @@ export class EpubNavigator extends VisualNavigator implements EpubModuleHost {
     let lastReadingPosition: ReadingPosition | undefined = undefined;
     if (this.annotator) {
       lastReadingPosition = (await this.annotator.getLastReadingPosition()) as
-        | ReadingPosition
-        | undefined;
+        ReadingPosition | undefined;
     }
 
     if (lastReadingPosition) {
@@ -1545,8 +1544,7 @@ export class EpubNavigator extends VisualNavigator implements EpubModuleHost {
       if (this.annotator) {
         lastReadingPosition =
           (await this.annotator.getLastReadingPosition()) as
-            | ReadingPosition
-            | undefined;
+            ReadingPosition | undefined;
       }
 
       const startLink = this.publication.getStartLink();
@@ -3396,8 +3394,7 @@ export class EpubNavigator extends VisualNavigator implements EpubModuleHost {
     // activeAnnotationMarker* are EPUB-specific fields on the concrete
     // AnnotationModule — not part of IAnnotationModule. Cast to access.
     const annotations = this.modules.annotations as
-      | AnnotationModule
-      | undefined;
+      AnnotationModule | undefined;
     if (annotations !== undefined) {
       if (
         annotations.activeAnnotationMarkerId === undefined ||
@@ -3416,8 +3413,7 @@ export class EpubNavigator extends VisualNavigator implements EpubModuleHost {
 
   deactivateMarker() {
     const annotations = this.modules.annotations as
-      | AnnotationModule
-      | undefined;
+      AnnotationModule | undefined;
     if (annotations !== undefined) {
       annotations.activeAnnotationMarkerId = undefined;
       annotations.activeAnnotationMarkerPosition = undefined;

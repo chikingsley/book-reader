@@ -1,6 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src", "test"],
+  "compilerOptions": {
+    "rootDir": "."
+  },
   "ts-node": {
     "transpileOnly": true,
     "esm": true,

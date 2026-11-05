@@ -4,6 +4,7 @@
   "exclude": [],
   "compilerOptions": {
     "outDir": "../../dist",
+    "rootDir": "../..",
     "declaration": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

@@ -132,8 +132,7 @@ export class HistoryModule
     if (history && this.annotator) {
       let lastReadingPosition =
         (await this.annotator.getLastReadingPosition()) as
-          | ReadingPosition
-          | undefined;
+          ReadingPosition | undefined;
       if (lastReadingPosition) {
         const linkHref = this.publication.getAbsoluteHref(
           lastReadingPosition.href

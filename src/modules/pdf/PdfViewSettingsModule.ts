@@ -207,8 +207,10 @@ export class PdfViewSettingsModule implements ReaderModule<PDFModuleHost> {
     const scale = this.viewStore.get(PdfViewSettingsModule.KEY_SCALE);
     const rotate = this.viewStore.get(PdfViewSettingsModule.KEY_ROTATE);
     const snap: PdfViewSettingsState = {};
-    if (scroll !== null && scroll !== undefined) snap.scrollMode = Number(scroll);
-    if (spread !== null && spread !== undefined) snap.spreadMode = Number(spread);
+    if (scroll !== null && scroll !== undefined)
+      snap.scrollMode = Number(scroll);
+    if (spread !== null && spread !== undefined)
+      snap.spreadMode = Number(spread);
     if (scale !== null && scale !== undefined) snap.scale = scale;
     if (rotate !== null && rotate !== undefined) snap.rotation = Number(rotate);
     return snap;
@@ -234,10 +236,16 @@ export class PdfViewSettingsModule implements ReaderModule<PDFModuleHost> {
     }
     const s = this.initial;
     if (s.scrollMode !== undefined) {
-      this.viewStore.set(PdfViewSettingsModule.KEY_SCROLL, String(s.scrollMode));
+      this.viewStore.set(
+        PdfViewSettingsModule.KEY_SCROLL,
+        String(s.scrollMode)
+      );
     }
     if (s.spreadMode !== undefined) {
-      this.viewStore.set(PdfViewSettingsModule.KEY_SPREAD, String(s.spreadMode));
+      this.viewStore.set(
+        PdfViewSettingsModule.KEY_SPREAD,
+        String(s.spreadMode)
+      );
     }
     if (s.scale !== undefined) {
       this.viewStore.set(PdfViewSettingsModule.KEY_SCALE, String(s.scale));

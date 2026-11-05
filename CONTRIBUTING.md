@@ -24,8 +24,8 @@ For **security vulnerabilities**, do not open a public issue — see [SECURITY.m
 
 ### Prerequisites
 
-- **Node.js 20+** (see `package.json` `engines` field).
-- **npm 10+** (bundled with Node 20).
+- **Node.js 22.12+** (see `package.json` `engines` field).
+- **npm 10+** (bundled with Node 22).
 - Modern browser for testing (Chrome 109+ / Firefox 115+ / Safari 16+ / Edge 109+).
 
 ### Setup

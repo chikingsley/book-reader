@@ -1,11 +1,7 @@
 import { Publication } from "../model/v3/Publication";
 
 export type ScriptMode =
-  | "ltr"
-  | "rtl"
-  | "cjk-horizontal"
-  | "cjk-vertical"
-  | "mongolian-vertical";
+  "ltr" | "rtl" | "cjk-horizontal" | "cjk-vertical" | "mongolian-vertical";
 
 const RTL_LANGUAGES = new Set([
   "ar",

@@ -478,7 +478,7 @@ export class AnnotationModule
               await this.showHighlights();
               await this.drawHighlights();
               return new Promise<Annotation>((resolve) => resolve(saved));
-            } catch (error) {
+            } catch {
               await this.showHighlights();
               await this.drawHighlights();
             }

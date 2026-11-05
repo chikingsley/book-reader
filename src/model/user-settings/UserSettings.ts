@@ -1763,18 +1763,14 @@ export class UserSettings implements IUserSettings {
     if (this.view instanceof FixedRenderer) return;
 
     const targetClass:
-      | typeof ColumnRenderer
-      | typeof ScrollRenderer
-      | typeof VerticalRenderer = this.isVerticalScript
-      ? VerticalRenderer
-      : scroll
-        ? ScrollRenderer
-        : ColumnRenderer;
+      typeof ColumnRenderer | typeof ScrollRenderer | typeof VerticalRenderer =
+      this.isVerticalScript
+        ? VerticalRenderer
+        : scroll
+          ? ScrollRenderer
+          : ColumnRenderer;
     const current = this.view as
-      | ColumnRenderer
-      | ScrollRenderer
-      | VerticalRenderer
-      | undefined;
+      ColumnRenderer | ScrollRenderer | VerticalRenderer | undefined;
 
     // Shortcut: re-engage the existing renderer ONLY if its constructor
     // flags also match. Without this, an RTL/vertical publication that

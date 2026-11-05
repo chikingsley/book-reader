@@ -137,11 +137,7 @@ export interface AudioMetadata {
  * is the catch-all for errors that don't map to the named categories.
  */
 export type AudioEngineErrorKind =
-  | "network"
-  | "decode"
-  | "drm"
-  | "notfound"
-  | "unknown";
+  "network" | "decode" | "drm" | "notfound" | "unknown";
 
 /**
  * Structured error fired by the `error` engine event. After this event,
